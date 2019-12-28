@@ -1,7 +1,7 @@
 # index模块的视图
-from . import index_blue
+from . import blog_bp
 
 
-@index_blue.route("/")
+@blog_bp.route("/")
 def index():
     return "hello flask"
