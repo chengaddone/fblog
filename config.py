@@ -24,6 +24,13 @@ class Config(object):
     PERMANENT_SESSION_LIFETIME = 86400*7
     # 设置日志等级
     LOG_LEVEL = logging.DEBUG
+    # 发送邮件的配置
+    MAIL_SERVER = 'smtp.163.com'
+    MAIL_USE_SSL = True
+    MAIL_PORT = 465
+    MAIL_USERNAME = "wangjiacheng9406@163.com"
+    MAIL_PASSWORD = "qwer123456"
+    MAIL_DEFAULT_SENDER = ('Addone博客管理员', 'wangjiacheng9406@163.com')
 
 
 class DevelopmentConfig(Config):

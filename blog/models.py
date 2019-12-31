@@ -44,7 +44,7 @@ class User(BaseModel, db.Model):
             "id": self.id,
             "nick_name": self.nick_name,
             "avatar_url": self.avatar_url,
-            "mobile": self.mobile,
+            "email": self.email,
             "gender": self.gender if self.gender else "MAN",
             "signature": self.signature if self.signature else "",
         }
@@ -54,7 +54,7 @@ class User(BaseModel, db.Model):
         resp_dict = {
             "id": self.id,
             "nick_name": self.nick_name,
-            "mobile": self.mobile,
+            "email": self.email,
             "register": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "last_login": self.last_login.strftime("%Y-%m-%d %H:%M:%S"),
         }
@@ -144,6 +144,8 @@ class Comment(BaseModel, db.Model):
     content = db.Column(db.Text, nullable=False)  # 评论内容
     parent_id = db.Column(db.Integer, db.ForeignKey("blog_comment.id"))  # 父评论id
     parent = db.relationship("Comment", remote_side=[id])  # 自关联
+    status = db.Column(db.Integer, default=0)  # 当前新闻状态 如果为0代表审核中，1代表审核通过，-1代表审核不通过
+    reason = db.Column(db.String(256))  # 未通过原因，status = -1 的时候使用
 
     def to_dict(self):
         resp_dict = {
