@@ -1,0 +1,46 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+    文章列表
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="../../static/blog/js/articles.js"></script>
+{% endblock %}
+
+{% block navigation %}
+    <nav id="topnav" class="f_l">
+        <ul>
+            <a href="#">  </a>
+            <a href="{{ url_for('index.index') }}">首页</a>
+            <a href="#" class="topnav_current">文章</a>
+            <a href="#">关于我</a>
+            <a href="#">时间轴</a>
+            <a href="#">给我留言</a>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block shuffling %}
+{% endblock %}
+
+{% block content %}
+    <div class="topnews" style="margin: 0">
+        <h2 id="category_title">
+            <span>
+                <ul class="menu">
+                    {% for category in data.categories %}
+                        <li style="float: left" data-cid="{{ category.id }}"><a href="javascript:;">{{ category.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </span>
+            <b>文章</b>推荐
+        </h2>
+        <div class="article_list">
+{#            动态获取文章列表信息#}
+        </div>
+    </div>
+{% endblock %}

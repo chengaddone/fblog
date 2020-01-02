@@ -52,12 +52,14 @@ def create_app(config_name):
     CSRFProtect(app)
 
     # 注册蓝图
-    from blog.modules.blog import blog_bp
-    app.register_blueprint(blog_bp)
+    from blog.modules.index import index_bp
+    app.register_blueprint(index_bp)
     from blog.modules.auth import auth_bp
     app.register_blueprint(auth_bp)
     from blog.modules.admin import admin_bp
     app.register_blueprint(admin_bp)
+    from blog.modules.article import article_bp
+    app.register_blueprint(article_bp)
 
     @app.after_request
     def after_request(response):

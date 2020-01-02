@@ -1,4 +1,6 @@
 # 项目的模型类
+import hashlib
+
 from .extensions import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -39,11 +41,20 @@ class User(BaseModel, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def gravatar_hash(self):
+        return hashlib.md5(self.email.lower().encode('utf-8')).hexdigest()
+
+    def gravatar(self, size=100, default='identicon', rating='g'):
+        url = 'https://secure.gravatar.com/avatar'
+        hash = self.gravatar_hash()
+        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
+            url=url, hash=hash, size=size, default=default, rating=rating)
+
     def to_dict(self):
         resp_dict = {
             "id": self.id,
             "nick_name": self.nick_name,
-            "avatar_url": self.avatar_url,
+            "avatar_url": self.avatar_url if self.avatar_url else self.gravatar(),
             "email": self.email,
             "gender": self.gender if self.gender else "MAN",
             "signature": self.signature if self.signature else "",
@@ -97,7 +108,9 @@ class Post(db.Model, BaseModel):
             "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "index_image_url": self.index_image_url,
             "clicks": self.clicks,
-            "like_count": self.like_count
+            "like_count": self.like_count,
+            "category": self.category.to_dict(),
+            "comments_count": self.comments.count(),
         }
         return resp_dict
 

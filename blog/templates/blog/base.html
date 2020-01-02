@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}首页{% endblock %}</title>
+    <link href="../../static/blog/css/base.css" rel="stylesheet">
+    <link href="../../static/blog/css/index.css" rel="stylesheet">
+    {% block css %}
+    {% endblock %}
+    <script type="text/javascript" src="../../static/blog/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/blog/js/sliders.js"></script>
+    <script type="text/javascript" src="../../static/blog/js/index.js"></script>
+    <!-- 返回顶部调用 begin -->
+    <script type="text/javascript" src="js/up/jquery.js"></script>
+    <script type="text/javascript" src="js/up/js.js"></script>
+    {% block js %}
+    {% endblock %}
+    <!-- 返回顶部调用 end-->
+</head>
+<body>
+<header>
+    <div class="logo f_l"> <a href="/"><img src=""></a> </div>
+    {% block navigation %}
+    {% endblock %}
+    {% if data.user %}
+        <!-- 用户登录后显 -->
+        <div class="user_login f_r">
+            <img src="{% if data.user.avatar_url %}{{ data.user.avatar_url }}{% else %}../../static/blog/images/cat.jpg{% endif %}" class="lgin_pic">
+            <a href="#">{{ data.user.nick_name }}</a>
+            <a href="javascript:" onclick="logout()">退出</a>
+        </div>
+    {% else %}
+        <div class="user_btns f_r">
+            <a href="javascript:;" class="login_btn">登录</a> / <a href="javascript:;" class="register_btn">注册</a>
+        </div>
+    {% endif %}
+</header>
+<article>
+    <div class="l_box f_l">
+        {% block shuffling %}
+        <div class="banner">
+            <div id="slide-holder">
+                <div id="slide-runner"> <a href="#"><img id="slide-img-1" src="../../static/blog/images/a1.jpg" alt="" /></a> <a href="/" target="_blank"><img id="slide-img-2" src="../../static/blog/images/a2.jpg" alt="" /></a> <a href="/" target="_blank"><img id="slide-img-3" src="../../static/blog/images/a3.jpg" alt="" /></a> <a href="/" target="_blank"><img id="slide-img-4" src="../../static/blog/images/a4.jpg" alt="" /></a>
+                    <div id="slide-controls">
+                        <p id="slide-client" class="text"><strong></strong><span></span></p>
+                        <p id="slide-desc" class="text"></p>
+                        <p id="slide-nav"></p>
+                    </div>
+                </div>
+            </div>
+            <script>
+                if(!window.slider) {
+                    var slider={};
+                }
+
+                slider.data= [
+                    {
+                        "id":"slide-img-1", // 与slide-runner中的img标签id对应
+                        "client":"标题1",
+                        "desc":"这里修改描述 这里修改描述 这里修改描述" //这里修改描述
+                    },
+                    {
+                        "id":"slide-img-2",
+                        "client":"标题2",
+                        "desc":"add your description here"
+                    },
+                    {
+                        "id":"slide-img-3",
+                        "client":"标题3",
+                        "desc":"add your description here"
+                    },
+                    {
+                        "id":"slide-img-4",
+                        "client":"标题4",
+                        "desc":"add your description here"
+                    }
+                ];
+
+            </script>
+        </div>
+        {% endblock %}
+        <!-- banner代码 结束 -->
+        {% block content %}
+        {% endblock %}
+    </div>
+    <div class="r_box f_r">
+        <div class="tit01">
+            <h3>关注我</h3>
+            <div class="gzwm">
+                <ul>
+                    <li><a class="xlwb" href="#" target="_blank">新浪微博</a></li>
+                    <li><a class="txwb" href="#" target="_blank">腾讯微博</a></li>
+                    <li><a class="rss" href="#" target="_blank">RSS</a></li>
+                    <li><a class="wx" href="#">邮箱</a></li>
+                </ul>
+            </div>
+        </div>
+        <!--tit01 end-->
+        <!--    <div class="ad300x100"> <img src="images/ad300x100.jpg"> </div>-->
+        {% block rightNav %}
+        <div class="moreSelect" id="lp_right_select">
+            <script>
+                window.onload = function ()
+                {
+                    var oLi = document.getElementById("tab").getElementsByTagName("li");
+                    var oUl = document.getElementById("ms-main").getElementsByTagName("div");
+
+                    for(var i = 0; i < oLi.length; i++)
+                    {
+                        oLi[i].index = i;
+                        oLi[i].onmouseover = function ()
+                        {
+                            for(var n = 0; n < oLi.length; n++) oLi[n].className="";
+                            this.className = "cur";
+                            for(var n = 0; n < oUl.length; n++) oUl[n].style.display = "none";
+                            oUl[this.index].style.display = "block"
+                        }
+                    }
+                }
+            </script>
+            <div class="ms-top">
+                <ul class="hd" id="tab">
+                    <li class="cur"><a href="/">点击排行</a></li>
+                    <li><a href="/">最新文章</a></li>
+                    <li><a href="/">站长推荐</a></li>
+                </ul>
+            </div>
+            <div class="ms-main" id="ms-main">
+                <div style="display: block;" class="bd bd-news" >
+                    <ul>
+                        <li><a href="/" target="_blank">住在手机里的朋友</a></li>
+                        <li><a href="/" target="_blank">教你怎样用欠费手机拨打电话</a></li>
+                        <li><a href="/" target="_blank">原来以为，一个人的勇敢是，删掉他的手机号码...</a></li>
+                        <li><a href="/" target="_blank">手机的16个惊人小秘密，据说99.999%的人都不知</a></li>
+                        <li><a href="/" target="_blank">你面对的是生活而不是手机</a></li>
+                        <li><a href="/" target="_blank">豪雅手机正式发布! 在法国全手工打造的奢侈品</a></li>
+                    </ul>
+                </div>
+                <div  class="bd bd-news">
+                    <ul>
+                        <li><a href="/" target="_blank">原来以为，一个人的勇敢是，删掉他的手机号码...</a></li>
+                        <li><a href="/" target="_blank">手机的16个惊人小秘密，据说99.999%的人都不知</a></li>
+                        <li><a href="/" target="_blank">住在手机里的朋友</a></li>
+                        <li><a href="/" target="_blank">教你怎样用欠费手机拨打电话</a></li>
+                        <li><a href="/" target="_blank">你面对的是生活而不是手机</a></li>
+                        <li><a href="/" target="_blank">豪雅手机正式发布! 在法国全手工打造的奢侈品</a></li>
+                    </ul>
+                </div>
+                <div class="bd bd-news">
+                    <ul>
+                        <li><a href="/" target="_blank">手机的16个惊人小秘密，据说99.999%的人都不知</a></li>
+                        <li><a href="/" target="_blank">你面对的是生活而不是手机</a></li>
+                        <li><a href="/" target="_blank">住在手机里的朋友</a></li>
+                        <li><a href="/" target="_blank">豪雅手机正式发布! 在法国全手工打造的奢侈品</a></li>
+                        <li><a href="/" target="_blank">教你怎样用欠费手机拨打电话</a></li>
+                        <li><a href="/" target="_blank">原来以为，一个人的勇敢是，删掉他的手机号码...</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!--ms-main end -->
+        </div>
+        {% endblock %}
+        <!--切换卡 moreSelect end -->
+
+        <div class="cloud">
+            <h3>标签云</h3>
+            <ul>
+                <li><a href="/">个人博客</a></li>
+                <li><a href="/">web开发</a></li>
+                <li><a href="/">前端设计</a></li>
+                <li><a href="/">Html</a></li>
+                <li><a href="/">CSS3</a></li>
+                <li><a href="/">Html5+css3</a></li>
+                <li><a href="/">百度</a></li>
+                <li><a href="/">Javasript</a></li>
+                <li><a href="/">web开发</a></li>
+                <li><a href="/">前端设计</a></li>
+                <li><a href="/">Html</a></li>
+                <li><a href="/">CSS3</a></li>
+                <li><a href="/">Html5+css3</a></li>
+                <li><a href="/">百度</a></li>
+            </ul>
+        </div>
+        {% block ad %}
+        <div class="ad"> <img src="../../static/blog/images/03.jpg"> </div>
+        {% endblock %}
+        {% block friendLink %}
+        <div class="links">
+            <h3>友情链接</h3>
+            <ul>
+                <li><a href="/">杨青个人博客</a></li>
+                <li><a href="/">web开发</a></li>
+                <li><a href="/">前端设计</a></li>
+                <li><a href="/">Html</a></li>
+                <li><a href="/">CSS3</a></li>
+                <li><a href="/">Html5+css3</a></li>
+                <li><a href="/">百度</a></li>
+            </ul>
+        </div>
+        {% endblock %}
+    </div>
+    <!--r_box end -->
+</article>
+<footer>
+    <p class="ft-copyright">兔小白博客 Design by DanceSmile 蜀ICP备11002373号-1</p>
+    <div id="tbox"> <a id="gotop" href="javascript:void(0)"></a> </div>
+</footer>
+
+<!-- 登录表单 -->
+<form class="login_form_con">
+    <div class="login_form">
+        <div class="login_title">
+            <h3>登 录</h3>
+            <a href="javascript:;" class="shutoff"></a>
+        </div>
+        <div class="form_group">
+            <input id="mobile" type="text" name="mobile" autocomplete="off">
+            <div class="input_tip">注册的邮箱</div>
+            <div id="login-mobile-err" class="error_tip">邮箱不能为空</div>
+        </div>
+        <div class="form_group">
+            <input id="password" type="password" name="password">
+            <div class="input_tip">密码(不少于6位)</div>
+            <div id="login-password-err" class="error_tip">密码不能为空</div>
+        </div>
+        <input type="submit" name="" value="登 录" class="input_sub">
+        <div class="down_link">还没有账号？<a href="javascript:;" class="to_register">立即注册</a></div>
+    </div>
+    <div class="mask"></div>
+</form>
+
+<!-- 注册表单 -->
+<form class="register_form_con">
+    <div class="register_form">
+        <div class="register_title">
+            <h3>注 册</h3>
+            <a href="javascript:;" class="shutoff"></a>
+        </div>
+        <div class="form_group">
+            <input type="text" name="mobile" autocomplete="off" id="register_mobile" class="phone_input">
+            <div class="input_tip">电子邮箱</div>
+            <div id="register-mobile-err" class="error_tip">邮箱不能为空</div>
+        </div>
+        <div class="form_group">
+            <input type="text" name="code_pwd" id="imagecode" class="code_pwd">
+            <div class="input_tip">图形验证码</div>
+            <img src="../../static/blog/images/pic_code.png" class="get_pic_code" onclick="generateImageCode()">
+            <div id="register-image-code-err" class="error_tip">图形码不能为空</div>
+        </div>
+        <div class="form_group">
+            <input type="text" name="smscode" id="smscode" class="code_pwd">
+            <div class="input_tip">邮箱验证码</div>
+            <a href="javascript:;" class="get_code" onclick="sendEmailCode()">点击获取验证码</a>
+            <div id="register-sms-code-err" class="error_tip">验证码不能为空</div>
+        </div>
+        <div class="form_group">
+            <input type="password" name="password" id="register_password" class="pass_input">
+            <div class="input_tip">密码(不少于6位)</div>
+            <div id="register-password-err" class="error_tip">密码不能为空</div>
+        </div>
+        <input type="submit" name="" value="注 册" class="input_sub">
+        <div class="down_link">已有账号？<a href="javascript:;" class="to_login">立即登录</a></div>
+    </div>
+    <div class="mask"></div>
+</form>
+</body>
+</html>

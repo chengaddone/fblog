@@ -1,0 +1,409 @@
+.fl{
+	float:left;
+}
+
+.fr{
+	float:right;
+}
+
+/* 清除浮动以及清除margin-top塌陷 */
+.clearfix:before,.clearfix:after{
+	content:'';
+	display:table;
+}
+.clearfix:after{
+	clear:both;
+}
+.clearfix{
+	zoom:1;
+}
+
+.detail_con{
+    width:98%;
+    padding:10px;
+    overflow:hidden;
+    background:#fff;
+    border:1px solid #ececee;
+}
+
+.detail_con h3{
+    font-size:30px;
+    line-height:45px;
+}
+
+.detail_about{
+    margin:10px 0;
+    border-bottom:1px solid #ebebeb;
+    padding:10px 0;
+}
+
+.time_souce{
+    color:#999;
+    font-size: 12px;
+    text-indent:20px;
+    background:url(../image/clock.png) left center no-repeat;
+}
+
+.comment{
+    color:#999;
+    font-size: 12px;
+    text-indent:20px;
+    background:url(../image/comment_icon.png) left center no-repeat;
+}
+
+.summary{
+    letter-spacing: .5px;
+    text-align: justify;
+    background:#f0f2f5;
+    font-size:16px;
+    line-height:28px;
+    padding:15px 25px;
+    margin-top:30px;
+    position:relative;
+}
+
+.detail_con .summary:before{
+    position:absolute;
+    left:5px;
+    top:5px;
+    content:"『";
+}
+
+.detail_con .summary:after{
+    position:absolute;
+    right:5px;
+    bottom:5px;
+    content:"』";
+}
+
+.detail_con h4{
+    font-size: 18px;
+    font-weight: 700;
+    color: #1478f0;
+    border-left: 5px solid #1478f0;
+    padding-left: 10px;
+    margin:30px 0
+}
+
+.detail_con p{
+    font-size: 16px;
+    line-height: 28px;
+    margin-bottom: 30px;
+    text-align: justify
+}
+
+.collection{
+    /*display:inline-block;*/
+    width:98px;
+    line-height:34px;
+    text-indent:45px;
+    border:1px solid #3791ef;
+    color:#3791ef;
+    border-radius:4px;
+    font-size:14px;
+    /*margin:0px 5px;*/
+    background:url(../image/collect_icons.png) 21px 7px no-repeat;
+    overflow:hidden;
+}
+
+.block-center {
+    display: block;
+    margin: 0 auto;
+}
+
+
+.collection:hover{
+    background:url(../image/collect_icons.png) 21px -33px no-repeat;
+}
+
+
+.focus{
+    display:inline-block;;
+    width:98px;
+    line-height:34px;
+    text-indent:45px;
+    border:1px solid #f80;
+    color:#f80;
+    border-radius:4px;
+    font-size:14px;
+    /*margin:0px 5px;*/
+    background:url(../images/focus_icons.png) 21px 7px no-repeat;
+    overflow: hidden;
+}
+
+
+.focus:hover{
+    background:url(../images/focus_icons.png) 21px -33px no-repeat;
+}
+
+
+.collected{
+    width:100px;
+    height:36px;
+    color:#666;
+    border-radius:4px;
+    font-size:14px;
+    /*margin:0px 5px;*/
+    background:url(../image/collect_icons.png) 15px -73px no-repeat #e6e6e6;
+    position:relative;
+    overflow:hidden;
+}
+
+.collected:hover{
+    background-position:10px -73px;
+}
+
+.collected .out{
+    position:absolute;
+    left:40px;
+    top:8px;
+}
+
+.collected:hover .out{
+    left:40px;
+    top:35px;
+}
+
+.collected .over{
+    position:absolute;
+    left:40px;
+    top:35px;
+}
+
+.collected:hover .over{
+    left:33px;
+    top:8px;
+}
+
+
+
+.focused{
+    display:inline-block;;
+    width:100px;
+    height:36px;
+    color:#666;
+    border-radius:4px;
+    font-size:14px;
+    /*margin:0px 5px;*/
+    background:url(../images/focus_icons.png) 15px -73px no-repeat #e6e6e6;
+    position:relative;
+    overflow:hidden;
+}
+
+.focused:hover{
+    background-position:10px -73px;
+}
+
+.focused .out{
+    position:absolute;
+    left:40px;
+    top:8px;
+}
+
+.focused:hover .out{
+    left:40px;
+    top:35px;
+}
+
+.focused .over{
+    position:absolute;
+    left:40px;
+    top:35px;
+}
+
+.focused:hover .over{
+    left:33px;
+    top:8px;
+}
+
+
+
+
+.comment_form_logout{
+    border:1px solid #e3e8ee;
+    width:97%;
+    border-radius:4px;
+    padding:15px 10px;
+    outline:none;
+    font-size:16px;
+    color:#e3e8ee;
+    margin-top:50px;
+}
+
+
+.comment_form{
+    margin-top:50px;
+    overflow:hidden;
+}
+
+.comment_form .person_pic{
+    float:left;
+    width:35px;
+    height:35px;
+}
+
+.comment_form img{
+    width:35px;
+    height:35px;
+    border-radius:50px;
+}
+
+.comment_form .comment_input{
+    float:left;
+    width:90%;
+    height:60px;
+    margin-left:10px;
+    border-radius:2px;
+    padding:5px;
+    outline:none;
+    border:1px solid #2185ed;
+}
+
+.comment_form .comment_sub{
+    float:right;
+    width:58px;
+    height:28px;
+    border:1px solid #2185ed;
+    background:#fff;
+    border-radius:4px;
+    margin:10px 7px 0 0;
+    cursor:pointer;
+}
+
+.comment_form .comment_sub:hover{
+    background:#2185ed;
+    color:#fff;
+}
+
+.comment_count{
+    font-size: 16px;
+    color: #333;
+    border-bottom: 1px solid #ebebeb;
+    padding: 12px 0
+}
+
+
+.comment_list{
+    border-bottom:1px solid #ebebeb;
+    overflow:hidden;
+    margin-top:15px;
+    padding-bottom:15px;
+}
+
+
+.comment_list .person_pic{
+    width:35px;
+    height:35px;
+    float:left;
+}
+
+.comment_list .person_pic img{
+    width:35px;
+    height:35px;
+    border-radius:50px;
+}
+
+.user_name{
+    width:90%;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #333;
+    margin-left:20px;
+}
+
+.comment_text{
+    width:90%;
+    font-size: 14px;
+    line-height: 20px;
+    color: #333;
+    margin:5px 0 0 20px;
+}
+
+.comment_time{
+    font-size:12px;
+    color:#999;
+    margin:10px 0 0 60px;
+}
+
+.comment_up{
+    font-size:12px;
+    color:#999;
+    text-indent:20px;
+    margin:10px 0 0 20px;
+    background:url(../images/zan_icon.png) left top no-repeat;
+}
+
+.has_comment_up{
+    font-size:12px;
+    color:#999;
+    text-indent:20px;
+    margin:10px 0 0 20px;
+    background:url(../images/zan_icon.png) left bottom no-repeat;
+}
+
+
+
+.comment_reply{
+    font-size:12px;
+    color:#999;
+    text-indent:20px;
+    margin:10px 0 0 20px;
+    background:url(../images/reply_icon.png) left center no-repeat;
+}
+
+
+.reply_text_con{
+    width:90%;
+    padding:10px;
+    background:#fafafa;
+    margin:10px 0 0 60px;
+}
+
+.reply_text_con .user_name2{
+    font-size:12px;
+    font-weight:bold;
+    color:#000;
+    margin-bottom:5px;
+}
+
+.reply_text_con .reply_text{
+    color:#666;
+    font-size:12px;
+}
+
+.reply_form{
+    width:90%;
+    overflow:hidden;
+    margin:10px 0 0 60px;
+    display:none;
+}
+
+.reply_input{
+    float:left;
+    width:90%;
+    height:30px;
+    border-radius:4px;
+    padding:10px;
+    outline:none;
+    border:1px solid #2185ed;
+}
+
+.reply_sub,.reply_cancel{
+    width:40px;
+    height:23px;
+    background:#76b6f4;
+    border:0px;
+    border-radius:2px;
+    color:#fff;
+    margin:10px 5px 0 10px;
+    cursor:pointer;
+}
+
+.reply_cancel{
+    background:#fff;
+    color: #909090;
+}
+
+
+
