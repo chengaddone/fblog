@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Addone博客后台管理</title>
+	<link rel="stylesheet" type="text/css" href="../../static/admin/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="../../static/admin/css/main.css">
+	<script type="text/javascript" src="../../static/admin/js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../static/admin/js/jquery.form.min.js"></script>
+	<script src="../../static/admin/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="../../static/admin/js/tinymce_setup.js"></script>
+	<script src="../../static/admin/js/write_blog.js"></script>
+</head>
+<body>
+	<div class="breadcrub">
+			当前位置：文章管理>写博客
+    </div>
+    <div class="pannel">
+        <form class="write_blog">
+            <h3 class="review_title">写博客</h3>
+            <div class="form_group">
+                <label>文章标题：</label>
+                <input type="text" class="input_txt2" name="title" value="">
+            </div>
+            <div class="form_group">
+                <label>文章分类：</label>
+                <select class="sel_opt" name="category_id">
+                    {% for category in data.categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form_group">
+                <label>文章摘要：</label>
+                <textarea class="input_multxt" name="digest"></textarea>
+            </div>
+            <div class="form_group">
+                <label>文章头图：</label>
+                <input type="file" class="input_file" name="index_image">
+            </div>
+            <div class="form_group">
+                <label>文章内容内容：</label>
+                <div class="rich_wrap fl">
+                    <input class="input_area" id="rich_content" name="content" value=""></input>
+                </div>
+            </div>
+            <div class="form_group indent_group line_top">
+                <input type="submit" value="发  布" class="confirm">
+            </div>
+            <div class="error_tip2">错误提示</div>
+        </form>
+    </div>
+
+</body>
+</html>
