@@ -21,7 +21,11 @@ def login():
         user_id = session.get("user_id", None)
         is_admin = session.get("is_admin", False)
         if user_id and is_admin:
-            return render_template("admin/index.html")
+            user = User.query.get(user_id)
+            data = {
+                "user": user.to_dict() if user else None
+            }
+            return render_template("admin/index.html", data=data)
         return render_template("admin/login.html")
     # 登录操作
     # 1.获取登录的参数
