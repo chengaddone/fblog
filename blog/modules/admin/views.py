@@ -6,9 +6,10 @@ from flask import render_template, request, current_app, session, redirect, url_
 
 
 from . import admin_bp
-from blog.models import User, Category, Post
+from blog.models import User, Category, Post, Comment
 from blog.utils.common import user_login_data
 from ... import constants, db
+from ...utils.image_storage import storage
 from ...utils.response_code import RET
 
 
@@ -194,14 +195,19 @@ def write_blog():
     except Exception as e:
         current_app.logger.error(e)
         return jsonify(errno=RET.PARAMERR, errmsg="参数错误，请稍后在试")
-    # 3.TODO 读取图片
-    index_image_data = "http://47.102.100.102/blog/01.jpg"
+    # 3.读取图片并上传
+    try:
+        index_image_data = index_image.read()
+        key = storage(index_image_data)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.THIRDERR, errmsg="图片上传失败")
     # 4.创建文章对象
     article = Post()
     article.title = title
     article.content = content
     article.digest = digest
-    article.index_image_url = index_image_data
+    article.index_image_url = constants.QINIU_DOMIN_PREFIX + key
     article.category_id = category_id
     article.user_id = user.id
     # 5.提交到数据库
@@ -213,4 +219,145 @@ def write_blog():
         current_app.logger.error(e)
         return jsonify(errno=RET.DBERR, errmsg="数据保存失败，请稍后在试")
     return jsonify(errno=RET.OK, errmsg="OK")
+
+
+@admin_bp.route("/article_list")
+def article_list():
+    """管理页面文章的列表显示"""
+    return None
+
+
+@admin_bp.route("article_category", methods=["GET", "POST"])
+def article_category():
+    """管理文章分类的视图"""
+    if request.method == "GET":
+        # 查询所以的文章分类
+        categories = []
+        try:
+            categories = Category.query.all()
+        except Exception as e:
+            current_app.logger.error(e)
+            abort(404)
+        category_dict_list = []
+        for category in categories:
+            category_dict_list.append(category.to_dict())
+        data = {
+            "categories": category_dict_list
+        }
+        return render_template("admin/article_category.html", data=data)
+    # post请求，更改文章的分类信息
+    # 1.取参数
+    category_name = request.json.get("category_name")
+    category_id = request.json.get("category_id")
+    # 2.校验参数
+    if not category_name:
+        return jsonify(errno=RET.PARAMERR, errmsg="参数有误")
+    if category_id:
+        # 当分类的id存在，则为修改已有的分类
+        try:
+            category_id = int(category_id)
+        except Exception as e:
+            current_app.logger.error(e)
+            return jsonify(errno=RET.PARAMERR, errmsg="参数有误")
+        try:
+            category = Category.query.get(category_id)
+        except Exception as e:
+            current_app.logger.error(e)
+            return jsonify(errno=RET.DBERR, errmsg="数据库查询错误")
+        if not category:
+            current_app.logger.error()
+            return jsonify(errno=RET.NODATA, errmsg="没有查询到相关分类信息")
+        category.name = category_name
+        # 提交到数据库
+        try:
+            db.session.add(category)
+            db.session.commit()
+        except Exception as e:
+            current_app.logger.error(e)
+            return jsonify(errno=RET.DBERR, errmsg="数据库插入失败")
+        return jsonify(errno=RET.OK, errmsg="编辑分类成功")
+    else:
+        # 新增分类信息
+        category = Category()
+        category.name = category_name
+        try:
+            db.session.add(category)
+            db.session.commit()
+        except Exception as e:
+            current_app.logger.error(e)
+            return jsonify(errno=RET.DBERR, errmsg="数据库插入失败")
+        return jsonify(errno=RET.OK, errmsg="新增分类成功")
+
+
+@admin_bp.route("/comment_list")
+def comment_list():
+    """获取评论审核页面"""
+    # 获取当前页
+    page = request.args.get("page", 1)
+    try:
+        page = int(page)
+    except Exception as e:
+        current_app.logger.error(e)
+        page = 1
+    comments = []
+    comment_list_dict = []
+    current_page = 1
+    total_page = 1
+    # 请求待审核的评论列表
+    try:
+        paginate = Comment.query.filter(Comment.status == 0)\
+            .order_by(Comment.create_time.desc())\
+            .paginate(page, constants.ADMIN_ARTICLE_PAGE_MAX_COUNT, False)
+        comments = paginate.items
+        current_page = paginate.page
+        total_page = paginate.pages
+    except Exception as e:
+        current_app.logger.error(e)
+    for comment in comments:
+        comment_list_dict.append(comment.to_dict())
+    data = {
+        "comments": comment_list_dict,
+        "current_page": current_page,
+        "total_page": total_page
+    }
+    return render_template("admin/comment_audit.html", data=data)
+
+
+@admin_bp.route("/comment_audit", methods=["POST"])
+def comment_audit():
+    """评论审核的视图"""
+    # 1.获取参数
+    comment_id = request.json.get("commentId")
+    action = request.json.get("action")
+    # 2.校验参数
+    if not all([comment_id, action]):
+        return jsonify(errno=RET.PARAMERR, errmsg="参数有误")
+    try:
+        comment_id = int(comment_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.PARAMERR, errmsg="参数有误")
+    if action not in ("agree", "reject"):
+        return jsonify(errno=RET.PARAMERR, errmsg="参数有误")
+    # 3.查找到要审核的信息
+    try:
+        comment = Comment.query.get(comment_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="系统错误，没有查询到相关数据，请稍后再试")
+    if not comment:
+        return jsonify(errno=RET.DATAERR, errmsg="无效的数据")
+    # 4.操作数据库
+    if action == "agree":
+        comment.status = 1
+    else:
+        comment.status = -1
+    try:
+        db.session.add(comment)
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="系统错误，数据修改失败，请稍后再试")
+    return jsonify(errno=RET.OK, errmsg="ok")
+
 

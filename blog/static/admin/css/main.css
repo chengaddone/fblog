@@ -138,23 +138,31 @@ body{
 
 
 .icon03{
-	background:url(../images/icons.png) 20px -89px no-repeat;
+	background:url(../images/audit.png) 17px no-repeat;
 }
 
 .icon031{
-	background:url(../images/icons.png) 50px -185px no-repeat;
+	background:url(../images/comment.png) 55px no-repeat;
 }
 
 .icon032{
-	background:url(../images/icons.png) 50px -235px no-repeat;
+	background:url(../images/nickname.png) 55px no-repeat;
 }
 
 .icon033{
-	background:url(../images/icons.png) 50px -336px no-repeat;
+	background:url(../images/liuyan.png) 55px no-repeat;
 }
 
-.icon034{
-	background:url(../images/icons.png) 50px -390px no-repeat;
+.icon04{
+	background:url(../images/admin.png) 17px no-repeat;
+}
+
+.icon041{
+	background:url(../images/head.png) 55px no-repeat;
+}
+
+.icon042{
+	background:url(../images/about.png) 55px no-repeat;
 }
 
 .sub_menu{
@@ -402,7 +410,7 @@ body{
     color:#fff;
 }
 
-.review,.edit,.addtype{
+.edit,.addtype{
 	display:block;
 	width:40px;
 	line-height:20px;
@@ -410,6 +418,26 @@ body{
 	border-radius:4px;
 	color:#fff;
 	background:#25c192;
+}
+
+.review_pass{
+	display:block;
+	width:40px;
+	line-height:20px;
+	margin:1px auto;
+	border-radius:4px;
+	color:#fff;
+	background:#25c192;
+}
+
+.review_no_pass{
+	display:block;
+	width:40px;
+	line-height:20px;
+	margin:1px auto;
+	border-radius:4px;
+	color:#fff;
+	background:#ff0000;
 }
 
 .addtype{

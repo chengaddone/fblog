@@ -28,12 +28,19 @@
 			<div class="first_menu"><a href="#" class="icon02">文章管理</a></div>
 			<ul class="sub_menu">
 				<li><a href="{{ url_for("admin.write_blog") }}" class="icon021" target="main_frame">写博客</a></li>
-				<li><a href="../../static/admin/html/news_edit.html" class="icon022" target="main_frame">新闻版式编辑</a></li>
-				<li><a href="../../static/admin/html/news_type.html" class="icon023" target="main_frame">博客分类</a></li>
+				<li><a href="../../static/admin/html/news_edit.html" class="icon022" target="main_frame">文章列表</a></li>
+				<li><a href="{{ url_for("admin.article_category") }}" class="icon023" target="main_frame">博客分类</a></li>
 			</ul>
             <div class="first_menu"><a href="#" class="icon03">审核区域</a></div>
 			<ul class="sub_menu">
-				<li><a href="../../static/admin/html/news_review.html" class="icon031" target="main_frame">评论审核</a></li>
+				<li><a href="{{ url_for("admin.comment_list") }}" class="icon031" target="main_frame">评论审核</a></li>
+                <li><a href="#" class="icon032" target="main_frame">昵称审核</a></li>
+                <li><a href="#" class="icon033" target="main_frame">留言审核</a></li>
+			</ul>
+            <div class="first_menu"><a href="#" class="icon04">管理员</a></div>
+			<ul class="sub_menu">
+				<li><a href="#" class="icon041" target="main_frame">头像上传</a></li>
+                <li><a href="#" class="icon042" target="main_frame">关于我页面管理</a></li>
 			</ul>
 		</div>
 	</div>

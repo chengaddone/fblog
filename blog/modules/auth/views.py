@@ -130,6 +130,7 @@ def register():
     session["nick_name"] = user.nick_name
     # 8.返回响应
     return jsonify(errno=RET.OK, errmsg="注册成功")
+    # TODO 重复注册的问题
 
 
 @auth_bp.route("/logout")
