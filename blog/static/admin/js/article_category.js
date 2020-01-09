@@ -67,7 +67,7 @@ $(function(){
             }
         }
 
-        // TODO 发起修改分类请求
+        // 发起修改分类请求
         $.ajax({
             url: "/admin/article_category",
             method: "post",

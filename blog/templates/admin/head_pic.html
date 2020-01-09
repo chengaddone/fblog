@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>addone博客后台</title>
+	<link rel="stylesheet" type="text/css" href="../../static/admin/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="../../static/admin/css/main.css">
+	<script type="text/javascript" src="../../static/admin/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="../../static/admin/js/jquery.form.min.js"></script>
+    <script type="text/javascript" src="../../static/admin/js/head_pic.js"></script>
+</head>
+<body>
+	<div class="breadcrub">
+        当前位置：管理员>管理员上传头像
+    </div>
+    <form class="pic_info">
+        <div class="form-group1">
+            <label style="margin-top:35px">当前头像：</label>
+            <img src="{% if data.user.avatar_url %}{{ data.user.avatar_url }}{% else %}../../static/admin/images/person.png{% endif %}" alt="用户图片" class="now_user_pic">
+        </div>
+        <div class="form-group1">
+            <label>上传图像：</label>
+            <input type="file" name="avatar" class="input_file1">
+        </div>
+
+        <div class="form-group1">
+            <label style="color: darkgray;">
+                管理员可上传自己的个性化头像，同时也可以登录本网站使用的第三方头像网站
+                <a href="https://cn.gravatar.com" target="_blank">gravatar</a>来更改自己的头像，用你的注册邮箱登录Gravatar，在该网站上传的头像会自动同步到本网站，注意：Gravatar是国外的网站，大陆访问可能会受到限制。
+            </label>
+            <br>
+            <label style="color: darkgray;">头像使用的优先级为自己上传的头像 > 默认的第三方网站头像。</label><br>
+            <label style="color: darkgray;">重置头像将会清空当前用户上传的头像，使用默认的Gravatar头像。</label>
+        </div>
+
+        <div class="form-group1">
+            <input type="submit" value="保 存" class="input_sub1">
+            <input type="button" value="重置头像" class="input_sub1" style="margin:10px auto" id="reset">
+        </div>
+    </form>
+
+
+
+</body>
+</html>

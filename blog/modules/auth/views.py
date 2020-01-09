@@ -4,7 +4,7 @@ import random
 import re
 import time
 
-from flask import request, abort, current_app, make_response, jsonify, render_template, session
+from flask import request, abort, current_app, make_response, jsonify, render_template, session, g
 
 from . import auth_bp
 from blog.utils.captcha.captcha import captcha
@@ -13,6 +13,7 @@ from blog.constants import IMAGE_CODE_REDIS_EXPIRES
 from blog.emailEx import send_mail
 from blog.models import User
 from blog.utils.response_code import RET
+from ...utils.common import user_login_data
 
 
 @auth_bp.route("/image_code")
@@ -178,3 +179,54 @@ def login():
     user.last_login = datetime.datetime.now()
     # 5.返回响应
     return jsonify(errno=RET.OK, errmsg="登录成功")
+
+
+@auth_bp.route("/change_nickname", methods=["POST"])
+@user_login_data
+def change_nickname():
+    """修改用户昵称的视图"""
+    # 1.获取当前的登录用户
+    user = g.user
+    # 2.获取参数
+    user_id = request.json.get("userId")
+    new_nickname = request.json.get("new_nickname")
+    # 3.校验数据
+    if not all([user_id, new_nickname]):
+        return jsonify(errno=RET.PARAMERR, errmsg="输入信息有误")
+    try:
+        user_id = int(user_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.PARAMERR, errmsg="数据异常，请稍后再试")
+    # 如果用户名没有改变，直接返回
+    if user.nick_name == new_nickname:
+        return jsonify(errno=RET.OK, errmsg="OK")
+    # 用户名唯一性校验，且只有自己可以改自己账户的昵称
+    try:
+        other = User.query.filter(User.nick_name == new_nickname).first()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="系统异常，请稍后再试")
+    if other:
+        return jsonify(errno=RET.DATAERR, errmsg="这个名字有用主了，换个名字吧")
+    if user.id != user_id:
+        return jsonify(errno=RET.PARAMERR, errmsg="请求错误")
+    # 4.更改用户的数据
+    if user.name_state == 1:
+        user.old_name = user.nick_name
+        user.nick_name = new_nickname
+        user.name_state = 0
+    elif user.name_state == 0:
+        # 用户上一次修改名字后还没有被管理员审核
+        user.nick_name = new_nickname
+    else:
+        user.name_state = 0
+        return jsonify(errno=RET.DBERR, errmsg="系统异常，请稍后再试")
+    # 5.上传数据
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="系统异常，请稍后再试")
+    return jsonify(errno=RET.OK, errmsg="ok")

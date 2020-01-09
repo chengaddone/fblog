@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>addone博客后台</title>
+	<link rel="stylesheet" type="text/css" href="../../static/admin/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="../../static/admin/css/main.css">
+	<link rel="stylesheet" href="../../static/admin/css/jquery.pagination.css">
+	<script type="text/javascript" src="../../static/admin/js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../static/admin/js/jquery.pagination.min.js"></script>
+    <script type="text/javascript" src="../../static/admin/js/nickname_audit.js"></script>
+</head>
+<body>
+	<div class="breadcrub">
+        当前位置：审核区域>用户昵称审核
+		</div>
+		<div class="pannel">
+			<table class="common_table">
+				<tr>
+					<th width="10%">id</th>
+					<th width="50%">用户邮箱</th>
+                    <th width="15%">修改的用户名</th>
+					<th width="15%">修改时间</th>
+					<th width="10%">管理操作</th>
+				</tr>
+                {% for user in data.users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.nick_name }}</td>
+                        <td>{{ user.update_time }}</td>
+                        <td>
+                            <a href="javascript:;" data-userid="{{ user.id }}" class="review_pass">通过</a>
+                            <a href="javascript:;" data-userid="{{ user.id }}" class="review_no_pass">拒绝</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+			</table>
+		</div>
+
+		<div class="box">
+			<div id="pagination" class="page"></div>
+		</div>
+
+        <script>
+			$(function() {
+				$("#pagination").pagination({
+					currentPage: {{ data.current_page }},
+					totalPage: {{ data.total_page }},
+					callback: function(current) {
+					    window.location.href = '/admin/nickname_list?page='+current;
+					}
+				});
+			});
+		</script>
+
+
+</body>
+</html>

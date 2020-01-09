@@ -73,10 +73,97 @@
 .links ul li a:hover { color: #000 }
 
 /*×¢²áµÇÂ¼µÄÑùÊ½*/
-.login_form_con,.register_form_con{
+.login_form_con,.register_form_con, .change_nickname{
     display:none;
 }
 
+.change_nickname .name_form{
+    width:500px;
+	height:270px;
+	position:fixed;
+    background:#fff;
+    border-radius:5px;
+    left:50%;
+    top:50%;
+    margin-left:-175px;
+    margin-top:-200px;
+    z-index:9999;
+}
+
+.change_nickname h3{
+	background:#25c192;
+	line-height:40px;
+	margin:2px;
+	color:#fff;
+	text-indent:10px;
+}
+
+.change_nickname .line_top{
+	text-align:center;
+	margin-top:80px;
+	padding-top:15px;
+}
+
+.change_nickname .confirm{
+	width:80px;
+	height:30px;
+	border-radius:4px;
+	color:#fff;
+	background:#25c192;
+	border:0px;
+	outline:none;
+}
+
+.change_nickname .cancel{
+	width:80px;
+	height:30px;
+	border-radius:4px;
+	color:#fff;
+	background:#25c192;
+	border:0px;
+	outline:none;
+}
+
+.mt50{
+	margin-top:50px;
+}
+
+.form_group1 .input_label{
+	width:80px;
+    line-height:32px;
+    margin-left:60px;
+}
+
+.form_group1 .error_tip3{
+	position:absolute;
+	left:141px;
+	top:132px;
+	color:#f00;
+	font-size:12px;
+	display:none;
+}
+
+.input_txt3{
+  width:298px;
+  height:32px;
+  border:1px solid #d0d0d0;
+  border-radius:4px;
+  outline:none;
+  text-indent:10px;
+}
+
+.form_group1{
+	overflow:hidden;
+	margin-bottom:15px;
+}
+
+.form_group1 label{
+	float:left;
+	width:12%;
+	line-height:30px;
+	text-align:right;
+	font-size:14px;
+}
 
 .login_form,.register_form{
     width:350px;

@@ -6,7 +6,7 @@ from flask import render_template, request, current_app, session, redirect, url_
 
 
 from . import admin_bp
-from blog.models import User, Category, Post, Comment
+from blog.models import User, Category, Post, Comment, AboutMe
 from blog.utils.common import user_login_data
 from ... import constants, db
 from ...utils.image_storage import storage
@@ -273,6 +273,7 @@ def article_category():
             db.session.add(category)
             db.session.commit()
         except Exception as e:
+            db.session.rollback()
             current_app.logger.error(e)
             return jsonify(errno=RET.DBERR, errmsg="数据库插入失败")
         return jsonify(errno=RET.OK, errmsg="编辑分类成功")
@@ -285,6 +286,7 @@ def article_category():
             db.session.commit()
         except Exception as e:
             current_app.logger.error(e)
+            db.session.rollback()
             return jsonify(errno=RET.DBERR, errmsg="数据库插入失败")
         return jsonify(errno=RET.OK, errmsg="新增分类成功")
 
@@ -344,7 +346,7 @@ def comment_audit():
         comment = Comment.query.get(comment_id)
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify(errno=RET.DBERR, errmsg="系统错误，没有查询到相关数据，请稍后再试")
+        return jsonify(errno=RET.DBERR, errmsg="系统错误：数据库查询错误，请稍后再试")
     if not comment:
         return jsonify(errno=RET.DATAERR, errmsg="无效的数据")
     # 4.操作数据库
@@ -357,7 +359,173 @@ def comment_audit():
         db.session.commit()
     except Exception as e:
         current_app.logger.error(e)
+        db.session.rollback()
         return jsonify(errno=RET.DBERR, errmsg="系统错误，数据修改失败，请稍后再试")
     return jsonify(errno=RET.OK, errmsg="ok")
 
 
+@admin_bp.route("/nickname_list")
+def nickname_list():
+    """用户昵称审核的列表显示视图"""
+    # 1.获取当前的页数
+    page = request.args.get("page", 1)
+    # 2.校验数据
+    try:
+        page = int(page)
+    except Exception as e:
+        current_app.logger.error(e)
+        page = 1
+    # 3.获取修改过名称的用户并分页
+    users = []
+    user_list_dict = []
+    current_page = 1
+    total_page = 1
+    try:
+        paginate = User.query.filter(User.is_admin != 1, User.name_state == 0)\
+            .order_by(User.update_time.desc())\
+            .paginate(page, constants.ADMIN_USER_PAGE_MAX_COUNT, False)
+        users = paginate.items
+        current_page = paginate.page
+        total_page = paginate.pages
+    except Exception as e:
+        current_app.logger.error(e)
+    for user in users:
+        user_list_dict.append(user.to_admin_dict())
+    # 4.准备回传的数据
+    data = {
+        "users": user_list_dict,
+        "current_page": current_page,
+        "total_page": total_page
+    }
+    return render_template("admin/nickname_audit.html", data=data)
+
+
+@admin_bp.route("/nickname_audit", methods=["POST"])
+def nickname_audit():
+    """用户昵称审核请求的接收视图"""
+    # 1.获取参数
+    user_id = request.json.get("userId")
+    action = request.json.get("action")
+    # 2.校验参数
+    if not all([user_id, action]):
+        return jsonify(errno=RET.PARAMERR, errmsg="参数有误")
+    try:
+        user_id = int(user_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.PARAMERR, errmsg="参数有误")
+    if action not in ("agree", "reject"):
+        return jsonify(errno=RET.PARAMERR, errmsg="参数有误")
+    # 3.查找到要审核的用户信息
+    try:
+        user = User.query.get(user_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="系统错误：数据库查询错误，请稍后再试")
+    if not user:
+        return jsonify(errno=RET.DATAERR, errmsg="无效的数据")
+    # 4.操作数据库
+    if action == "reject":
+        try:
+            other = User.query.filter(User.nick_name == user.old_name).first()
+        except Exception as e:
+            current_app.logger.error(e)
+            return jsonify(errno=RET.DBERR, errmsg="系统错误：数据库查询错误，请稍后再试")
+        if not other:  # 没有重名的用户
+            user.nick_name = user.old_name
+        else:
+            user.nick_name = user.email
+    user.name_state = 1
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        db.session.rollback()
+        return jsonify(errno=RET.DBERR, errmsg="系统错误，数据修改失败，请稍后再试")
+    return jsonify(errno=RET.OK, errmsg="ok")
+
+
+@admin_bp.route("/leave_word")
+def leave_word():
+    """留言审核页面的视图"""
+    return render_template("admin/leave_word.html")
+
+
+@admin_bp.route("/admin_head_pic", methods=["GET", "POST"])
+@user_login_data
+def admin_head_pic():
+    """管理员上传头像的接口"""
+    user = g.user
+    if request.method == "GET":
+        return render_template("admin/head_pic.html", data={"user": user.to_dict()})
+    # post请求代表上传头像
+    # 1.取到图片资源
+    try:
+        avatar = request.files.get("avatar").read()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.PARAMERR, errmsg="图片读取失败")
+    # 2.上传图片到七牛云
+    try:
+        key = storage(avatar)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.THIRDERR, errmsg="图片上传到七牛云失败")
+    # 3.将头像的路径写入用户数据库
+    user.avatar_url = constants.QINIU_DOMIN_PREFIX + key
+    # 4.上传到数据库
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="系统错误：数据上传至数据库失败，请稍后再试")
+    # 拼接并返回图片的地址
+    data = {
+        "avatar_url": constants.QINIU_DOMIN_PREFIX + key
+    }
+
+    return jsonify(errno=RET.OK, errmsg="OK", data=data)
+
+
+@admin_bp.route("/reset_head_pic", methods=["POST"])
+@user_login_data
+def reset_head_pic():
+    """将管理员的头像清空，重新设置为Gravatar网站中的头像"""
+    user = g.user
+    if user.is_admin == 1:
+        user.avatar_url = ""
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            current_app.logger.error(e)
+            return jsonify(errno=RET.DBERR, errmsg="系统错误：数据库更新失败，请稍后再试")
+        data = {
+            "avatar_url": user.to_dict().get("avatar_url")
+        }
+
+        return jsonify(errno=RET.OK, errmsg="OK", data=data)
+    else:
+        return jsonify(errno="10010", errmsg="无效的请求")
+
+
+@admin_bp.route("/edit_page_about_me", methods=["GET", "POST"])
+def edit_page_about_me():
+    """编辑‘关于我’页面的视图"""
+    info = []
+    try:
+        info = AboutMe.query.all()
+    except Exception as e:
+        current_app.logger.error(e)
+        abort(404)
+    if not info:
+        about_me = None
+    else:
+        about_me = info[0]
+    if request.method == "GET":
+        # get请求，返回页面
+        return render_template("admin/about_me.html", data={"about_me": about_me.to_dict() if about_me else None})
+    # TODO post请求代表修改内容
+    # if not about_me:

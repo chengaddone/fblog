@@ -29,6 +29,10 @@ class User(BaseModel, db.Model):
     post_list = db.relationship('Post', backref='user', lazy='dynamic')
     # 当前用户发布的评论
     comment_list = db.relationship('Comment', backref='user', lazy='dynamic')
+    # 当用户修改名称时，将用户的旧昵称放在此字段，当用户昵称审核没有通过时，将旧昵称还原
+    old_name = db.Column(db.String(32), nullable=True)
+    # 标记用户是否修改了昵称，1为默认值，0表示用户修改了昵称
+    name_state = db.Column(db.Integer, default=1)
 
     @property  # property装饰器让password方法可以以属性的样式被调用
     def password(self):
@@ -68,6 +72,7 @@ class User(BaseModel, db.Model):
             "email": self.email,
             "register": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "last_login": self.last_login.strftime("%Y-%m-%d %H:%M:%S"),
+            "update_time": self.update_time.strftime("%Y-%m-%d %H:%M:%S")
         }
         return resp_dict
 
@@ -178,3 +183,17 @@ class PostLike(BaseModel, db.Model):
 
     post_id = db.Column("comment_id", db.Integer, db.ForeignKey("blog_post.id"), primary_key=True)  # 评论编号
     user_id = db.Column("user_id", db.Integer, db.ForeignKey("blog_user.id"), primary_key=True)  # 用户编号
+
+
+class AboutMe(BaseModel, db.Model):
+    """关于我页面介绍的数据库模型"""
+    __tablename__ = "about_me"
+
+    id = db.Column(db.Integer, primary_key=True)  # 数据库编号
+    content = db.Column(db.Text, nullable=False)  # 关于我页面内容
+
+    def to_dict(self):
+        resp_dict = {
+            "content": self.content
+        }
+        return resp_dict

@@ -51,6 +51,48 @@ $(function() {
 		}
 	});
 
+	// 打开修改个人昵称框
+    $('#nick_name').click(function () {
+        $(".change_nickname").show();
+    });
+
+    // 修改个人昵称框的取消按钮
+    $(".cancel").click(function(){
+        $(".change_nickname").hide();
+        $(".error_tip3").hide();
+    });
+
+    // 修改个人昵称的确定按钮
+    $(".confirm").click(function () {
+        var userId = $(this).attr("data-userid");
+        var new_nickname = $('.input_txt3').val();
+
+        if (new_nickname == '') {
+            $(".error_tip3").html("昵称不能为空").show();
+            return;
+        }
+
+        var params = {
+            "userId": userId,
+            "new_nickname": new_nickname
+        };
+
+        $.ajax({
+            url: "/auth/change_nickname",
+            method: "post",
+            headers: {"X-CSRFToken": getCookie("csrf_token")},
+            data: JSON.stringify(params),
+            contentType: "application/json",
+            success: function (resp) {
+                if (resp.errno == "0"){
+                    //刷新当前页面
+                    location.reload();
+                }else{
+                    $(".error_tip3").html(resp.errmsg).show();
+                }
+            }
+        })
+    });
 
     // 打开注册框
     $('.register_btn').click(function () {

@@ -26,7 +26,7 @@
         <!-- 用户登录后显 -->
         <div class="user_login f_r">
             <img src="{% if data.user.avatar_url %}{{ data.user.avatar_url }}{% else %}../../static/blog/images/cat.jpg{% endif %}" class="lgin_pic">
-            <a href="#">{{ data.user.nick_name }}</a>
+            <a href="javascript:;" data-userid="{{ data.user.id }}" id="nick_name">{{ data.user.nick_name }}</a>
             <a href="javascript:" onclick="logout()">退出</a>
         </div>
     {% else %}
@@ -263,5 +263,24 @@
     </div>
     <div class="mask"></div>
 </form>
+
+{#修改昵称的表单#}
+<div class="change_nickname">
+    <div class="name_form">
+        <form>
+            <h3>修改昵称</h3>
+            <div class="form_group1 mt50">
+                <label class="input_label">新的昵称：</label><input type="text" class="input_txt3" value="{{ data.user.nick_name }}">
+                <span class="error_tip3">提示文字</span>
+            </div>
+            <div class="form_group1 line_top">
+                <input type="button" value="确定" data-userid="{{ data.user.id }}" class="confirm">&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" value="取消" class="cancel">
+            </div>
+        </form>
+    </div>
+    <div class="mask"></div>
+</div>
+
 </body>
 </html>
